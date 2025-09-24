@@ -71,7 +71,6 @@ Kickstart Guide:
     plugins or Neovim features used in Kickstart.
 
    NOTE: Look for lines like this
-
     Throughout the file. These are for you, the reader, to help you understand what is happening.
     Feel free to delete them once you know what you're doing, but they should serve as a guide
     for when you are first encountering a few different constructs in your Neovim config.
@@ -98,8 +97,14 @@ vim.g.have_nerd_font = false
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+
 -- Make line numbers default
 vim.o.number = true
+vim.o.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -168,6 +173,29 @@ vim.o.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+--  run current file as a python script
+vim.keymap.set('n', '<leader>rp', ':!python %<CR>', { noremap = true, silent = true })
+
+--  Open file in new tab
+vim.keymap.set('n', '<leader>tf', ':tabe ', { noremap = true })
+
+-- Move to the next tab
+vim.keymap.set('n', '<Tab>', ':tabnext<CR>', { noremap = true, silent = true })
+
+-- Move to the previous tab
+vim.keymap.set('n', '<S-Tab>', ':tabprevious<CR>', { noremap = true, silent = true })
+
+-- Create a new tab
+vim.keymap.set('n', '<leader>tt', ':tabnew<CR>', { noremap = true, silent = true })
+
+-- Close current tab
+vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', { noremap = true, silent = true })
+
+-- Move current tab to the right
+vim.keymap.set('n', '<leader>to', ':tabmove +1<CR>', { noremap = true, silent = true })
+
+-- Move current tab to the left
+vim.keymap.set('n', '<leader>tn', ':tabmove -1<CR>', { noremap = true, silent = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -283,7 +311,39 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    -- theme
+    'rebelot/kanagawa.nvim',
+    priority = 1000, -- ensures theme loads before other plugins that depend on colors
+    config = function()
+      require('kanagawa').setup {
+        -- your custom options here
+        -- e.g.
+        undercurl = true,
+        commentStyle = { italic = true },
+        keywordStyle = { italic = true },
+        typeStyle = {},
+        statementStyle = { bold = true },
+        transparent = false,
+        dimInactive = false,
+        terminalColors = true,
+        theme = 'wave', -- or "dragon", "lotus"
+        background = {
+          dark = 'wave',
+          light = 'lotus',
+        },
+        overrides = function(colors)
+          return {
+            -- e.g. NormalFloat = { bg = "none" },
+            -- FloatBorder = { bg = "none" },
+          }
+        end,
+      }
+    end,
+  },
+  {
+    'github/copilot.vim',
+  },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -671,9 +731,9 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -894,7 +954,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'kanagawa-dragon'
     end,
   },
 
